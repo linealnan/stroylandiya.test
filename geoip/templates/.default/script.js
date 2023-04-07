@@ -3,8 +3,6 @@ const app = BX.BitrixVue.createApp({
 	{
 		return {
 			ip: null,
-			continent_code: null,
-			type: null,
 			showResult: false,
 			showError: false
 		}
@@ -57,11 +55,11 @@ const app = BX.BitrixVue.createApp({
 	// language=Vue
 	template: `
 	<div class="container">
-		<form class="was-validated">
+		<form class="">
 			<div class="form-row align-items-center">
 				<div class="col-sm-3 my-1">
-					<input v-model="ip" type="text" class="form-control" id="inlineFormInputName" placeholder="Введите ip адрес" required>
-					<div class="invalid-feedback" v-if="showError">
+					<input v-model="ip" type="text" class="form-control" placeholder="Введите ip адрес" required>
+					<div class="text-danger" v-if="showError">
 						Введенная строка не является ip адресом
 			  		</div>
 				</div>

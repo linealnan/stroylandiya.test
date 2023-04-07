@@ -65,8 +65,7 @@ class GeoIP extends \CBitrixComponent
      * @todo вынесети преобразование данных GeoIPDto из инфболока в маппер
      */
     private function processAJAX($request) {
-        // Debug::dump($request->get('ip'));
-        $searchIp = $request->get('ip');
+        $searchIp = trim(htmlspecialcharsEx(($request->get('ip'))));
         // $searchIp = '95.105.124.118';
         
         if (!$this->isIp($searchIp)) {
@@ -139,6 +138,9 @@ class GeoIP extends \CBitrixComponent
         ]);
     }
 
+    /**
+     * Получение информации об ip из api.ipstack.com
+     */
     private function getIp(string $ip)
     {
         return $this->httpClient->get('http://api.ipstack.com/'. $ip . '?access_key=' . $this->arParams["IPSTACK_COM_ACCESS_KEY"]);
@@ -210,7 +212,10 @@ class GeoIP extends \CBitrixComponent
             }
     }
 
-    private function showAjaxAnswer($result, int $responseCode = 200)
+    /**
+     * Очистка потока и установка заголовков ответа для AJAX взаимодействия 
+     */
+    private function showAjaxAnswer($result, int $responseCode = 200): void
 	{
 		$this->app->RestartBuffer();
         http_response_code($responseCode);
