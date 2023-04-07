@@ -54,35 +54,37 @@ const app = BX.BitrixVue.createApp({
 	mounted() {},
 	// language=Vue
 	template: `
-	<div class="container">
-		<form class="">
-			<div class="form-row align-items-center">
-				<div class="col-sm-3 my-1">
-					<input v-model="ip" type="text" class="form-control" placeholder="Введите ip адрес" required>
+	<div class="container w-50 h-50">
+		<div class="row align-items-center h-100">
+			<form class="">
+				<div class="row align-items-center">	
+					<div class="col-sm my-1">
+						<input v-model="ip" type="text" class="form-control" placeholder="Введите ip адрес" required>
+					</div>
+					<div class="col-sm my-1">
+						<button v-on:click="send" type="button" class="btn btn-primary">Получить информацию</button>
+					</div>
 					<div class="text-danger" v-if="showError">
 						Введенная строка не является ip адресом
-			  		</div>
+					</div>
 				</div>
-				<div class="col-auto my-1">
-					<button v-on:click="send" type="button" class="btn btn-primary">Получить информацию</button>
-				</div>
+			</form>
+			<div class="" v-if="showResult">
+				<ul class="list-group">
+					<li class="list-group-item"><strong>ip адрес</strong>: {{ ip }}</li>
+					<li class="list-group-item"><strong>Тип ip адреса</strong>: {{ type }}</li>
+					<li class="list-group-item"><strong>Код материка</strong>: {{ continent_code }}</li>
+					<li class="list-group-item"><strong>Материк</strong>: {{ continent_name }}</li>
+					<li class="list-group-item"><strong>Код страны</strong>: {{ country_code }}</li>
+					<li class="list-group-item"><strong>Страна</strong>: {{ country_name }}</li>
+					<li class="list-group-item"><strong>Код региона</strong>: {{ region_code }}</li>
+					<li class="list-group-item"><strong>Регион</strong>: {{ region_name }}</li>
+					<li class="list-group-item"><strong>Город</strong>: {{ city }}</li>
+					<li class="list-group-item"><strong>Почтовый индекс</strong>: {{ zip }}</li>
+					<li class="list-group-item"><strong>Широта</strong>: {{ latitude }}</li>
+					<li class="list-group-item"><strong>Долгота</strong>: {{ longitude }}</li>
+				</ul>	
 			</div>
-		</form>
-		<div class="" v-if="showResult">
-			<ul class="list-group">
-				<li class="list-group-item">{{ ip }}</li>
-				<li class="list-group-item">{{ type }}</li>
-				<li class="list-group-item">{{ continent_code }}</li>
-				<li class="list-group-item">{{ continent_name }}</li>
-				<li class="list-group-item">{{ country_code }}</li>
-				<li class="list-group-item">{{ country_name }}</li>
-				<li class="list-group-item">{{ region_code }}</li>
-				<li class="list-group-item">{{ region_name }}</li>
-				<li class="list-group-item">{{ city }}</li>
-				<li class="list-group-item">{{ zip }}</li>
-				<li class="list-group-item">{{ latitude }}</li>
-				<li class="list-group-item">{{ longitude }}</li>
-			</ul>	
 		</div>
 	</div>
 	`
