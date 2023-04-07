@@ -10,26 +10,31 @@ const app = BX.BitrixVue.createApp({
 	},
 	methods: {
 		send: function (event) {
-			fetch('', {
-				method: 'POST',
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
+			BX.ajax({
+				url: '/',
+				data: {
 					ip: this.ip,
-					AJAX_MODE: 'Y'
-				})
-			})
-			.then((response) => {
-				return response.json();
-			})
-			.then((data) => {
-				console.log(data);
-				this.ip = data.UF_IP,
-				this.continent_code = data.UF_CONTINENT_CODE,
-				this.type = data.UF_TYPE,
-				this.showResult = true
-			});
+				},
+				method: 'POST',
+				dataType: 'json',
+				timeout: 30,
+				async: true,
+				processData: true,
+				scriptsRunFirst: true,
+				emulateOnload: true,
+				start: true,
+				cache: false,
+				onsuccess: (data) => {
+					console.log(data);
+					this.ip = data.ip,
+					this.type = data.type,
+					this.continent_code = data.continent_code,
+					this.showResult = true
+				},
+				onfailure: (data) => {
+					console.log(data);
+				},
+			   }); 
 		}
 	},
 	mounted() {},
@@ -39,7 +44,7 @@ const app = BX.BitrixVue.createApp({
 		<form>
 			<div class="form-row align-items-center">
 				<div class="col-sm-3 my-1">
-					<input v-model="ip" type="text" class="form-control" id="inlineFormInputName" placeholder="ip адрес">
+					<input v-model="ip" type="text" class="form-control" id="inlineFormInputName" placeholder="Введите ip адрес">
 				</div>
 				<div class="col-auto my-1">
 					<button v-on:click="send" type="button" class="btn btn-primary">Получить информацию</button>

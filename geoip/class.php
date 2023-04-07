@@ -25,9 +25,7 @@ Loc::loadMessages(__FILE__);
 class GeoIP extends \CBitrixComponent
 {
     /** @var Main\Context $context */
-    protected $checkSession = true;
     protected $app = null;
-    protected $user = null;
     protected $httpClient;
     protected $hlEntity;
     protected $geoipInfo;
@@ -35,10 +33,8 @@ class GeoIP extends \CBitrixComponent
     public function __construct($component = null)
     {
         global $APPLICATION;
-        global $USER;
 
         $this->app = $APPLICATION;
-        $this->user = $USER;
         parent::__construct($component);
         
         $this->httpClient = $this->initHttpClient();
@@ -47,11 +43,10 @@ class GeoIP extends \CBitrixComponent
     public function executeComponent()
     {
         $request = Main\Application::getInstance()->getContext()->getRequest();
-		$isAjaxRequest = $request->getRequestMethod() == 'POST' /*&& $request->get('AJAX_MODE') == 'Y'*/;
         $this->checkAndHandleComponentParams();
         $this->hlEntity = $this->getHighloadBlockEntity($this->arParams["HLBL_ID"]);
         
-        if (!$isAjaxRequest) {
+        if (!$request->isAjaxRequest()) {
             $this->app->ShowHead();
             Extension::load("ui.vue");
             if($this->startResultCache())
@@ -66,11 +61,18 @@ class GeoIP extends \CBitrixComponent
 
     /**
      * AJAX режим работы компонента
+     * 
+     * @todo вынесети преобразование данных GeoIPDto из инфболока в маппер
      */
     private function processAJAX($request) {
-        Debug::dump(json_decode($request->get('data')));
-        $searchIp = '95.105.124.118';
+        // Debug::dump($request->get('ip'));
+        $searchIp = $request->get('ip');
+        // $searchIp = '95.105.124.118';
         
+        if (!$this->isIp($searchIp)) {
+            $this->showAjaxAnswer(['Error' => Loc::getMessage('IP_ADDRESS_FORMAT_ERROR')], $responseCode = 400);
+        }
+
         $localSearhingResult = $this->findIpDataForHighloadBlock($searchIp);
         
         if (!$localSearhingResult) {
@@ -78,14 +80,23 @@ class GeoIP extends \CBitrixComponent
             $this->addIpInfo($result);
             $this->geoipInfo = $result;
         } else {
-            $this->geoipInfo = $localSearhingResult;
+            
+            $GeoIPDto = new GeoIPDto();
+            $GeoIPDto->ip = $localSearhingResult['UF_IP'];
+            $GeoIPDto->type  = $localSearhingResult['UF_TYPE'];
+            $this->geoipInfo = $GeoIPDto;
         }
         $this->showAjaxAnswer($this->geoipInfo);
+    }
+
+    private function isIp(string $str) {
+        return preg_match('/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\z/', $str);
     }
 
     private function checkAndHandleComponentParams() {
         
         $sendErrorToAdmin = (Bool) $this->arParams["SEND_ERROR_TO_ADMIN"];
+        
         /**
          * Идентификатор хайлоад инфоболока
          */
@@ -182,9 +193,10 @@ class GeoIP extends \CBitrixComponent
             }
     }
 
-    private function showAjaxAnswer($result)
+    private function showAjaxAnswer($result, int $responseCode = 200)
 	{
-		$this->app->RestartBuffer();		
+		$this->app->RestartBuffer();
+        http_response_code($responseCode);
 		Header('Content-Type: application/json');
 		echo json_encode($result);
 		die();
