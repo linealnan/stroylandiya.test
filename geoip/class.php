@@ -84,6 +84,18 @@ class GeoIP extends \CBitrixComponent
             $GeoIPDto = new GeoIPDto();
             $GeoIPDto->ip = $localSearhingResult['UF_IP'];
             $GeoIPDto->type  = $localSearhingResult['UF_TYPE'];
+            $GeoIPDto->continent_code = $localSearhingResult['UF_CONTINENT_CODE'];
+            $GeoIPDto->continent_name = $localSearhingResult['UF_CONTINENT_NAME'];
+            $GeoIPDto->country_code = $localSearhingResult['UF_COUNRTRY_CODE'];
+            $GeoIPDto->country_name = $localSearhingResult['UF_COUNRTRY_NAME'];
+            $GeoIPDto->region_code = $localSearhingResult['UF_REGION_CODE'];
+            $GeoIPDto->region_name = $localSearhingResult['UF_REGION_NAME'];
+            $GeoIPDto->city = $localSearhingResult ['UF_CITY'];
+            $GeoIPDto->zip = $localSearhingResult['UF_ZIP"'];
+            $GeoIPDto->zip = $localSearhingResult['UF_ZIP'];
+            $GeoIPDto->latitude = $localSearhingResult['UF_LATITUDE'];
+            $GeoIPDto->longitude = $localSearhingResult['UF_LONGITUDE'];
+            
             $this->geoipInfo = $GeoIPDto;
         }
         $this->showAjaxAnswer($this->geoipInfo);
@@ -147,9 +159,14 @@ class GeoIP extends \CBitrixComponent
             "UF_TYPE"=> $data->type,
             "UF_CONTINENT_CODE"=> $data->continent_code,
             "UF_CONTINENT_NAME"=> $data->continent_name,
-            // "TYPE"=> $data->type,
-            // "TYPE"=> $data->type,
-            // "TYPE"=> $data->type,
+            "UF_COUNRTRY_CODE"=> $data->country_code,
+            "UF_COUNRTRY_NAME"=> $data->country_name,
+            "UF_REGION_CODE"=> $data->region_code,
+            "UF_REGION_NAME"=> $data->region_name,
+            "UF_CITY"=> $data->city,
+            "UF_ZIP"=> $data->zip,
+            "UF_LATITUDE"=> $data->latitude,
+            "UF_LONGITUDE"=> $data->longitude,
         ];
 
         $result = $this->hlEntity::add($data);
